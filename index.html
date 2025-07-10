@@ -415,9 +415,16 @@
             margin-top: 24px;
         }
 
+        .stress-factors-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 16px;
+        }
+
         .stress-factor-item {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             padding: 16px;
             background: #fef3c7;
             border-radius: 12px;
@@ -437,6 +444,7 @@
             font-weight: 600;
             margin-right: 16px;
             font-size: 14px;
+            flex-shrink: 0;
         }
 
         .stress-factor-content {
@@ -487,6 +495,43 @@
             margin-bottom: 0;
         }
 
+        .scoring-table {
+            background: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 16px;
+        }
+
+        .table-header {
+            background: #4facfe;
+            color: white;
+            padding: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .table-row {
+            display: flex;
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .table-cell {
+            flex: 1;
+            font-size: 14px;
+            padding: 0 8px;
+            text-align: center;
+        }
+
+        .table-cell:first-child {
+            font-weight: 600;
+            text-align: left;
+        }
+
         .alert {
             background: #fef2f2;
             border: 1px solid #fecaca;
@@ -499,6 +544,32 @@
         .alert-title {
             font-weight: 600;
             margin-bottom: 8px;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            color: #92400e;
+            padding: 16px;
+            border-radius: 12px;
+            margin: 16px 0;
+        }
+
+        .warning-box .alert-title {
+            color: #92400e;
+        }
+
+        .success-box {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            color: #047857;
+            padding: 16px;
+            border-radius: 12px;
+            margin: 16px 0;
+        }
+
+        .success-box .alert-title {
+            color: #047857;
         }
 
         .timestamp {
@@ -640,6 +711,10 @@
                     <div id="analysis-content">
                         <!-- 분석 내용이 동적으로 생성됩니다 -->
                     </div>
+
+                    <div class="stress-factors" id="stress-factors-section">
+                        <!-- 스트레스 요인이 동적으로 생성됩니다 -->
+                    </div>
                 </div>
 
                 <div class="section">
@@ -656,6 +731,70 @@
                         <h3>전문적 도움</h3>
                         <div id="professional-recommendations">
                             <!-- 추천사항이 동적으로 생성됩니다 -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">점수 산출 방식</div>
+                    
+                    <div class="scoring-table">
+                        <div class="table-header">PHQ-9 채점 기준</div>
+                        <div class="table-row">
+                            <div class="table-cell">0-4점</div>
+                            <div class="table-cell">우울증 아님</div>
+                        </div>
+                        <div class="table-row">
+                            <div class="table-cell">5-9점</div>
+                            <div class="table-cell">가벼운 우울증</div>
+                        </div>
+                        <div class="table-row">
+                            <div class="table-cell">10-19점</div>
+                            <div class="table-cell">중간정도 우울증</div>
+                        </div>
+                        <div class="table-row">
+                            <div class="table-cell">20-27점</div>
+                            <div class="table-cell">심한 우울증</div>
+                        </div>
+                    </div>
+
+                    <div class="scoring-table">
+                        <div class="table-header">GAD-7 채점 기준</div>
+                        <div class="table-row">
+                            <div class="table-cell">0-4점</div>
+                            <div class="table-cell">불안 아님</div>
+                        </div>
+                        <div class="table-row">
+                            <div class="table-cell">5-9점</div>
+                            <div class="table-cell">가벼운 불안</div>
+                        </div>
+                        <div class="table-row">
+                            <div class="table-cell">10-14점</div>
+                            <div class="table-cell">중간 불안</div>
+                        </div>
+                        <div class="table-row">
+                            <div class="table-cell">15-21점</div>
+                            <div class="table-cell">심한 불안</div>
+                        </div>
+                    </div>
+
+                    <div class="scoring-table">
+                        <div class="table-header">KOSS 채점 기준</div>
+                        <div class="table-row">
+                            <div class="table-cell">42.4점 이하</div>
+                            <div class="table-cell">정상 (하위 25%)</div>
+                        </div>
+                        <div class="table-row">
+                            <div class="table-cell">42.5-48.4점</div>
+                            <div class="table-cell">경계 (중위 50%)</div>
+                        </div>
+                        <div class="table-row">
+                            <div class="table-cell">48.5-54.7점</div>
+                            <div class="table-cell">위험 (상위 25%)</div>
+                        </div>
+                        <div class="table-row">
+                            <div class="table-cell">54.8점 이상</div>
+                            <div class="table-cell">고위험</div>
                         </div>
                     </div>
                 </div>
@@ -755,6 +894,51 @@
             }
         };
 
+        // KOSS 영역별 문항 매핑
+        const kossDomains = {
+            physical: { 
+                name: "물리환경", 
+                items: [0, 1, 2], 
+                description: "작업장의 물리적 환경(소음, 조명, 온도, 공간 등)으로 인한 스트레스"
+            },
+            jobDemand: { 
+                name: "직무요구도", 
+                items: [3, 4, 5, 6], 
+                description: "과도한 업무량, 시간적 압박, 멀티태스킹 요구로 인한 스트레스"
+            },
+            autonomy: { 
+                name: "직무자율성", 
+                items: [7, 8, 9], 
+                description: "업무 수행 방식이나 스케줄 조정의 자율성 부족으로 인한 스트레스",
+                reverse: true  // 역채점 문항
+            },
+            relationship: { 
+                name: "관계갈등", 
+                items: [10, 11, 12], 
+                description: "직장 동료들과의 관계에서 발생하는 갈등이나 소통 문제"
+            },
+            jobSecurity: { 
+                name: "직무불안정", 
+                items: [13, 14], 
+                description: "고용 불안정성이나 미래에 대한 불확실성으로 인한 스트레스"
+            },
+            organization: { 
+                name: "조직체계", 
+                items: [15, 16, 17, 18, 19], 
+                description: "인사제도의 공정성, 부서 간 협력, 의견 반영 기회 부족"
+            },
+            reward: { 
+                name: "보상부적절", 
+                items: [20, 21], 
+                description: "업무에 비해 부적절한 보상이나 인정 부족으로 인한 스트레스"
+            },
+            culture: { 
+                name: "직장문화", 
+                items: [22, 23, 24, 25], 
+                description: "차별, 비합리적 업무지시, 부족한 인력이나 시설로 인한 스트레스"
+            }
+        };
+
         // 현재 상태
         let currentTest = 'phq9';
         let currentQuestion = 0;
@@ -781,6 +965,11 @@
             document.getElementById('current-test-subtitle').textContent = testData.subtitle;
             document.getElementById('test-badge').textContent = testData.badge;
             
+            // 테스트 배지 색상 설정
+            const badge = document.getElementById('test-badge');
+            badge.style.background = currentTest === 'phq9' ? '#10b981' : 
+                                   currentTest === 'gad7' ? '#f59e0b' : '#8b5cf6';
+            
             // 진행률 업데이트
             const overallProgress = calculateOverallProgress();
             document.getElementById('progress-fill').style.width = `${overallProgress}%`;
@@ -805,6 +994,12 @@
                 
                 optionsContainer.appendChild(optionElement);
             });
+            
+            // 기존 응답 복원
+            if (responses[currentTest][currentQuestion] !== undefined) {
+                const selectedIndex = responses[currentTest][currentQuestion];
+                document.querySelectorAll('.option')[selectedIndex].classList.add('selected');
+            }
             
             // 네비게이션 버튼 상태
             updateNavigationButtons();
@@ -918,25 +1113,26 @@
             // 점수 계산
             const phq9Score = calculatePHQ9Score();
             const gad7Score = calculateGAD7Score();
-            const kossScore = calculateKOSSScore();
+            const kossScores = calculateKOSSScore();
+            const kossTotal = calculateKOSSTotal(kossScores);
             
             // 결과 해석
             const phq9Result = interpretPHQ9(phq9Score);
             const gad7Result = interpretGAD7(gad7Score);
-            const kossResult = interpretKOSS(kossScore);
+            const kossResult = interpretKOSS(kossTotal);
             
             // 화면 전환
             document.getElementById('assessment-screen').style.display = 'none';
             document.getElementById('results-screen').style.display = 'block';
             
             // 상태 카드 업데이트
-            updateStatusCards(phq9Score, gad7Score, kossScore, phq9Result, gad7Result, kossResult);
+            updateStatusCards(phq9Score, gad7Score, kossTotal, phq9Result, gad7Result, kossResult);
             
             // 상세 결과 업데이트
-            updateDetailedResults(phq9Score, gad7Score, kossScore, phq9Result, gad7Result, kossResult);
+            updateDetailedResults(phq9Score, gad7Score, kossTotal, phq9Result, gad7Result, kossResult);
             
             // 분석 및 권장사항 생성
-            generateAnalysisAndRecommendations(phq9Result, gad7Result, kossResult);
+            generateAnalysisAndRecommendations(phq9Result, gad7Result, kossResult, kossScores);
             
             // 타임스탬프 설정
             setTimestamp();
@@ -952,12 +1148,36 @@
             return responses.gad7.reduce((sum, score) => sum + score, 0);
         }
 
-        // KOSS 점수 계산
+        // KOSS 영역별 점수 계산
         function calculateKOSSScore() {
-            // KOSS는 실제로는 영역별로 계산되지만, 여기서는 단순화하여 전체 평균을 구함
-            const totalScore = responses.koss.reduce((sum, score) => sum + score, 0);
-            const averageScore = totalScore / responses.koss.length;
-            return Math.round((averageScore - 1) * 100 / 3 * 10) / 10;
+            const domainScores = {};
+            
+            Object.keys(kossDomains).forEach(domain => {
+                const domainInfo = kossDomains[domain];
+                const domainItems = domainInfo.items;
+                let domainSum = 0;
+                
+                domainItems.forEach(itemIndex => {
+                    let score = responses.koss[itemIndex];
+                    // 역채점 문항 처리 (직무자율성)
+                    if (domainInfo.reverse) {
+                        score = 3 - score; // 0->3, 1->2, 2->1, 3->0
+                    }
+                    domainSum += score;
+                });
+                
+                const domainAvg = domainSum / domainItems.length;
+                domainScores[domain] = Math.round((domainAvg * 100 / 3) * 10) / 10;
+            });
+            
+            return domainScores;
+        }
+
+        // KOSS 총점 계산
+        function calculateKOSSTotal(domainScores) {
+            const scores = Object.values(domainScores);
+            const total = scores.reduce((sum, score) => sum + score, 0) / scores.length;
+            return Math.round(total * 10) / 10;
         }
 
         // PHQ-9 결과 해석
@@ -1021,14 +1241,15 @@
         }
 
         // 분석 및 권장사항 생성
-        function generateAnalysisAndRecommendations(phq9Result, gad7Result, kossResult) {
+        function generateAnalysisAndRecommendations(phq9Result, gad7Result, kossResult, kossScores) {
             const analysisContent = document.getElementById('analysis-content');
             const immediateRecs = document.getElementById('immediate-recommendations');
             const professionalRecs = document.getElementById('professional-recommendations');
+            const stressFactorsSection = document.getElementById('stress-factors-section');
             
             // 전체 위험도 평가
             const riskLevels = [phq9Result.level, gad7Result.level, kossResult.level];
-            const hasModerateOrSevere = riskLevels.includes('moderate') || riskLevels.includes('severe') || riskLevels.includes('high-risk');
+            const hasModerateOrSevere = riskLevels.includes('moderate') || riskLevels.includes('severe') || riskLevels.includes('high-risk') || riskLevels.includes('risk');
             const hasMild = riskLevels.includes('mild') || riskLevels.includes('boundary');
             
             // 분석 내용 생성
@@ -1043,21 +1264,24 @@
                 `;
             } else if (hasMild) {
                 analysisHTML = `
-                    <div style="background: #fef3c7; border: 1px solid #fbbf24; color: #92400e; padding: 16px; border-radius: 12px;">
-                        <div style="font-weight: 600; margin-bottom: 8px;">경미한 주의 필요</div>
+                    <div class="warning-box">
+                        <div class="alert-title">경미한 주의 필요</div>
                         현재 일부 영역에서 경미한 스트레스나 우울/불안 증상이 관찰됩니다. 적절한 자기관리를 통해 개선할 수 있습니다.
                     </div>
                 `;
             } else {
                 analysisHTML = `
-                    <div style="background: #d1fae5; border: 1px solid #10b981; color: #047857; padding: 16px; border-radius: 12px;">
-                        <div style="font-weight: 600; margin-bottom: 8px;">양호한 상태</div>
+                    <div class="success-box">
+                        <div class="alert-title">양호한 상태</div>
                         현재 정신건강 상태가 전반적으로 양호합니다. 현재의 건강한 생활 패턴을 유지하시기 바랍니다.
                     </div>
                 `;
             }
             
             analysisContent.innerHTML = analysisHTML;
+            
+            // 스트레스 요인 상위 3개 영역 생성
+            generateStressFactors(kossScores, stressFactorsSection);
             
             // 즉시 실행 가능한 관리법
             let immediateRecsHTML = '';
@@ -1068,6 +1292,7 @@
                     <div class="recommendation-item">업무 중 1시간마다 5분 휴식</div>
                     <div class="recommendation-item">걱정 일기 작성 (하루 5분)</div>
                     <div class="recommendation-item">스마트폰/TV 시청 시간 제한</div>
+                    <div class="recommendation-item">업무 우선순위 설정 및 시간 관리</div>
                 `;
             } else if (hasMild) {
                 immediateRecsHTML = `
@@ -1075,6 +1300,7 @@
                     <div class="recommendation-item">충분한 수면과 휴식</div>
                     <div class="recommendation-item">스트레스 해소 활동 찾기</div>
                     <div class="recommendation-item">가족, 친구와의 시간 늘리기</div>
+                    <div class="recommendation-item">업무와 개인 시간의 경계 설정</div>
                 `;
             } else {
                 immediateRecsHTML = `
@@ -1082,6 +1308,7 @@
                     <div class="recommendation-item">정기적인 자기점검 (월 1회)</div>
                     <div class="recommendation-item">취미 활동 지속하기</div>
                     <div class="recommendation-item">사회적 관계 유지하기</div>
+                    <div class="recommendation-item">예방적 스트레스 관리법 학습</div>
                 `;
             }
             immediateRecs.innerHTML = immediateRecsHTML;
@@ -1094,21 +1321,64 @@
                     <div class="recommendation-item">EAP(직원지원프로그램) 상담 서비스 이용</div>
                     <div class="recommendation-item">스트레스 관리 교육 프로그램 참여</div>
                     <div class="recommendation-item">정기적인 정신건강 검진</div>
+                    <div class="recommendation-item">필요시 약물치료 상담</div>
                 `;
             } else if (hasMild) {
                 professionalRecsHTML = `
                     <div class="recommendation-item">EAP(직원지원프로그램) 상담 고려</div>
                     <div class="recommendation-item">스트레스 관리 워크숍 참여</div>
                     <div class="recommendation-item">정신건강 관련 교육 자료 활용</div>
+                    <div class="recommendation-item">동료 지원 그룹 참여</div>
                 `;
             } else {
                 professionalRecsHTML = `
                     <div class="recommendation-item">연 1회 정신건강 검진</div>
                     <div class="recommendation-item">정신건강 교육 프로그램 참여</div>
                     <div class="recommendation-item">직장 내 동료 지원 프로그램 활용</div>
+                    <div class="recommendation-item">스트레스 예방 교육 참여</div>
                 `;
             }
             professionalRecs.innerHTML = professionalRecsHTML;
+        }
+
+        // 스트레스 요인 상위 3개 영역 생성
+        function generateStressFactors(kossScores, container) {
+            // 점수가 높은 상위 3개 영역 찾기
+            const sortedDomains = Object.entries(kossScores)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3);
+            
+            if (sortedDomains.length === 0 || sortedDomains[0][1] < 50) {
+                // 모든 영역이 양호한 경우
+                container.innerHTML = `
+                    <div class="success-box">
+                        <div class="alert-title">스트레스 요인 분석</div>
+                        모든 직무스트레스 영역이 양호한 수준입니다. 현재 상태를 잘 유지하고 계십니다.
+                    </div>
+                `;
+                return;
+            }
+            
+            let stressFactorsHTML = `
+                <div class="stress-factors-title">주요 스트레스 요인 상위 3개 영역</div>
+            `;
+            
+            sortedDomains.forEach((domain, index) => {
+                const [domainKey, score] = domain;
+                const domainInfo = kossDomains[domainKey];
+                
+                stressFactorsHTML += `
+                    <div class="stress-factor-item">
+                        <div class="stress-factor-rank">${index + 1}</div>
+                        <div class="stress-factor-content">
+                            <div class="stress-factor-title">${domainInfo.name} (${score}점)</div>
+                            <div class="stress-factor-desc">${domainInfo.description}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = stressFactorsHTML;
         }
 
         // 타임스탬프 설정
@@ -1154,7 +1424,33 @@
             // 초기 상태에서는 시작 화면만 표시
             document.getElementById('assessment-screen').style.display = 'none';
             document.getElementById('results-screen').style.display = 'none';
+            
+            // 결과 화면 애니메이션 효과
+            const sections = document.querySelectorAll('.section');
+            sections.forEach((section, index) => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(20px)';
+            });
         });
+
+        // 결과 화면 애니메이션
+        function animateResults() {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach((section, index) => {
+                setTimeout(() => {
+                    section.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                }, index * 150);
+            });
+        }
+
+        // 결과 표시 시 애니메이션 실행
+        const originalShowResults = showResults;
+        showResults = function() {
+            originalShowResults();
+            setTimeout(animateResults, 100);
+        };
     </script>
 </body>
 </html>
