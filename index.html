@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>종합 문진 결과</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 414px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 60px 24px 40px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.05); opacity: 0.1; }
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 300;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .status-overview {
+            display: flex;
+            justify-content: space-around;
+            padding: 24px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .status-card {
+            text-align: center;
+            flex: 1;
+            padding: 16px 8px;
+            background: white;
+            border-radius: 16px;
+            margin: 0 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .status-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .status-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .status-normal { background: #10b981; }
+        .status-mild { background: #f59e0b; }
+        .status-moderate { background: #ef4444; }
+        .status-severe { background: #dc2626; }
+
+        .status-label {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .status-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 24px;
+        }
+
+        .section {
+            margin-bottom: 32px;
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            border-radius: 2px;
+            margin-right: 12px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-size: 16px;
+            color: #374151;
+            flex: 1;
+        }
+
+        .result-score {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-right: 12px;
+        }
+
+        .result-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .stress-factors {
+            margin-top: 24px;
+        }
+
+        .stress-factor-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: #fef3c7;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .stress-factor-rank {
+            width: 32px;
+            height: 32px;
+            background: #f59e0b;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 16px;
+            font-size: 14px;
+        }
+
+        .stress-factor-content {
+            flex: 1;
+        }
+
+        .stress-factor-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 4px;
+        }
+
+        .stress-factor-desc {
+            font-size: 14px;
+            color: #a16207;
+            line-height: 1.4;
+        }
+
+        .recommendation {
+            background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+
+        .recommendation h3 {
+            color: #0277bd;
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+
+        .recommendation-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .recommendation-item::before {
+            content: '✓';
+            color: #0277bd;
+            font-weight: bold;
+            margin-right: 12px;
+            margin-top: 2px;
+        }
+
+        .recommendation-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .scoring-table {
+            background: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 16px;
+        }
+
+        .table-header {
+            background: #4facfe;
+            color: white;
+            padding: 12px;
+            font-weight: 600;
+        }
+
+        .table-row {
+            display: flex;
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .table-cell {
+            flex: 1;
+            font-size: 14px;
+            padding: 0 8px;
+        }
+
+        .table-cell:first-child {
+            font-weight: 600;
+        }
+
+        .alert {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 16px;
+            border-radius: 12px;
+            margin: 16px 0;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 24px;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .timestamp {
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>종합 문진 결과</h1>
+            <p class="subtitle">정신건강 상태 종합 분석</p>
+        </div>
+
+        <div class="status-overview">
+            <div class="status-card">
+                <div class="status-icon status-mild">8</div>
+                <div class="status-label">PHQ-9</div>
+                <div class="status-value">가벼운 우울</div>
+            </div>
+            <div class="status-card">
+                <div class="status-icon status-moderate">12</div>
+                <div class="status-label">GAD-7</div>
+                <div class="status-value">중간 불안</div>
+            </div>
+            <div class="status-card">
+                <div class="status-icon status-moderate">52</div>
+                <div class="status-label">KOSS</div>
+                <div class="status-value">경계 수준</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <div class="section-title">상세 검사 결과</div>
+                
+                <div class="result-item">
+                    <div class="result-label">PHQ-9 (우울증 선별검사)</div>
+                    <div class="result-score">8점</div>
+                    <div class="result-status status-mild">가벼운 우울</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label">GAD-7 (불안장애 선별검사)</div>
+                    <div class="result-score">12점</div>
+                    <div class="result-status status-moderate">중간 불안</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label">KOSS (직무스트레스 측정)</div>
+                    <div class="result-score">52.3점</div>
+                    <div class="result-status status-moderate">경계 수준</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">전문가 상세 분석</div>
+                
+                <div class="alert">
+                    <div class="alert-title">주의 필요</div>
+                    현재 중간 수준의 불안과 가벼운 우울 증상이 관찰되며, 직무스트레스가 경계 수준에 있습니다. 조기 개입을 통해 증상 악화를 방지하는 것이 중요합니다.
+                </div>
+
+                <h4 style="margin: 20px 0 12px 0; color: #1f2937;">주요 스트레스 요인 상위 3개 영역</h4>
+                
+                <div class="stress-factors">
+                    <div class="stress-factor-item">
+                        <div class="stress-factor-rank">1</div>
+                        <div class="stress-factor-content">
+                            <div class="stress-factor-title">직무요구도 (62.5점)</div>
+                            <div class="stress-factor-desc">과도한 업무량, 시간적 압박, 멀티태스킹 요구로 인한 스트레스가 높습니다. 업무 우선순위 설정과 시간 관리가 필요합니다.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stress-factor-item">
+                        <div class="stress-factor-rank">2</div>
+                        <div class="stress-factor-content">
+                            <div class="stress-factor-title">조직체계 (58.3점)</div>
+                            <div class="stress-factor-desc">인사제도의 공정성, 부서 간 협력, 의견 반영 기회 부족으로 인한 스트레스입니다. 조직 내 소통 개선이 필요합니다.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stress-factor-item">
+                        <div class="stress-factor-rank">3</div>
+                        <div class="stress-factor-content">
+                            <div class="stress-factor-title">직무자율성 결여 (55.6점)</div>
+                            <div class="stress-factor-desc">업무 수행 방식이나 스케줄 조정의 자율성이 제한되어 스트레스를 받고 있습니다. 업무 재량권 확대가 도움이 될 것입니다.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">맞춤형 관리 방안</div>
+                
+                <div class="recommendation">
+                    <h3>즉시 실행 가능한 관리법</h3>
+                    <div class="recommendation-item">규칙적인 수면 패턴 유지 (7-8시간)</div>
+                    <div class="recommendation-item">점심시간 10분 산책 또는 명상</div>
+                    <div class="recommendation-item">업무 중 1시간마다 5분 휴식</div>
+                    <div class="recommendation-item">걱정 일기 작성 (하루 5분)</div>
+                </div>
+
+                <div class="recommendation">
+                    <h3>전문적 도움</h3>
+                    <div class="recommendation-item">EAP(직원지원프로그램) 상담 서비스 이용</div>
+                    <div class="recommendation-item">정신건강 전문의 상담 고려</div>
+                    <div class="recommendation-item">스트레스 관리 교육 프로그램 참여</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">점수 산출 방식</div>
+                
+                <div class="scoring-table">
+                    <div class="table-header">PHQ-9 채점 기준</div>
+                    <div class="table-row">
+                        <div class="table-cell">0-4점</div>
+                        <div class="table-cell">우울증 아님</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">5-9점</div>
+                        <div class="table-cell">가벼운 우울증</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">10-19점</div>
+                        <div class="table-cell">중간정도 우울증</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">20-27점</div>
+                        <div class="table-cell">심한 우울증</div>
+                    </div>
+                </div>
+
+                <div class="scoring-table">
+                    <div class="table-header">GAD-7 채점 기준</div>
+                    <div class="table-row">
+                        <div class="table-cell">0-4점</div>
+                        <div class="table-cell">불안 아님</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">5-9점</div>
+                        <div class="table-cell">가벼운 불안</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">10-14점</div>
+                        <div class="table-cell">중간 불안</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">15-21점</div>
+                        <div class="table-cell">심한 불안</div>
+                    </div>
+                </div>
+
+                <div class="scoring-table">
+                    <div class="table-header">KOSS 채점 기준 (남성)</div>
+                    <div class="table-row">
+                        <div class="table-cell">42.4점 이하</div>
+                        <div class="table-cell">정상 (하위 25%)</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">42.5-48.4점</div>
+                        <div class="table-cell">경계 (중위 50%)</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">48.5-54.7점</div>
+                        <div class="table-cell">위험 (상위 25%)</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">54.8점 이상</div>
+                        <div class="table-cell">고위험</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn" onclick="downloadReport()">결과 리포트 저장</button>
+            
+            <div class="timestamp">
+                검사일시: 2025년 7월 10일 오후 2:30<br>
+                다음 검사 권장일: 2025년 8월 10일
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 결과 리포트 저장 기능
+        function downloadReport() {
+            // 실제 앱에서는 PDF 생성 또는 데이터 저장 로직
+            alert('결과 리포트가 저장되었습니다.');
+        }
+
+        // 페이지 로드 시 애니메이션 효과
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach((section, index) => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    section.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                }, index * 150);
+            });
+        });
+
+        // 각 검사의 점수 계산 함수들
+        function calculatePHQ9(responses) {
+            // PHQ-9: 9개 문항, 각 0-3점
+            return responses.reduce((sum, score) => sum + score, 0);
+        }
+
+        function calculateGAD7(responses) {
+            // GAD-7: 7개 문항, 각 0-3점
+            return responses.reduce((sum, score) => sum + score, 0);
+        }
+
+        function calculateKOSS(responses, gender) {
+            // KOSS: 26개 문항, 영역별 점수 계산
+            const domains = {
+                physical: [0, 1, 2], // 물리환경 (3문항)
+                jobDemand: [3, 4, 5, 6], // 직무요구 (4문항)
+                autonomy: [7, 8, 9], // 직무자율성 (3문항)
+                relationship: [10, 11, 12], // 관계갈등 (3문항)
+                jobSecurity: [13, 14], // 직무불안정 (2문항)
+                organization: [15, 16, 17, 18, 19], // 조직체계 (5문항)
+                reward: [20, 21], // 보상부적절 (2문항)
+                culture: [22, 23, 24, 25] // 직장문화 (4문항)
+            };
+
+            const domainScores = {};
+            
+            Object.keys(domains).forEach(domain => {
+                const domainItems = domains[domain];
+                const domainSum = domainItems.reduce((sum, index) => sum + responses[index], 0);
+                const domainAvg = domainSum / domainItems.length;
+                domainScores[domain] = Math.round((domainAvg - 1) * 100 / 3 * 100) / 100;
+            });
+
+            return domainScores;
+        }
+
+        // 결과 해석 함수들
+        function interpretPHQ9(score) {
+            if (score <= 4) return { level: 'normal', text: '우울증 아님' };
+            if (score <= 9) return { level: 'mild', text: '가벼운 우울증' };
+            if (score <= 19) return { level: 'moderate', text: '중간정도 우울증' };
+            return { level: 'severe', text: '심한 우울증' };
+        }
+
+        function interpretGAD7(score) {
+            if (score <= 4) return { level: 'normal', text: '불안 아님' };
+            if (score <= 9) return { level: 'mild', text: '가벼운 불안' };
+            if (score <= 14) return { level: 'moderate', text: '중간 불안' };
+            return { level: 'severe', text: '심한 불안' };
+        }
+
+        function interpretKOSS(totalScore, gender) {
+            const criteria = gender === 'male' ? 
+                { normal: 42.4, boundary: 48.4, risk: 54.7 } :
+                { normal: 41.6, boundary: 50.0, risk: 55.6 };
+
+            if (totalScore <= criteria.normal) return { level: 'normal', text: '정상' };
+            if (totalScore <= criteria.boundary) return { level: 'boundary', text: '경계' };
+            if (totalScore <= criteria.risk) return { level: 'risk', text: '위험' };
+            return { level: 'high-risk', text: '고위험' };
+        }
+
+        // 샘플 데이터로 테스트
+        const sampleData = {
+            phq9: [1, 1, 2, 1, 0, 1, 1, 1, 0], // 총 8점
+            gad7: [2, 2, 2, 1, 1, 2, 2], // 총 12점
+            koss: [2, 3, 3, 3, 2, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 3, 3, 2], // 샘플 응답
+            gender: 'male'
+        };
+
+        console.log('PHQ-9 점수:', calculatePHQ9(sampleData.phq9));
+        console.log('GAD-7 점수:', calculateGAD7(sampleData.gad7));
+        console.log('KOSS 점수:', calculateKOSS(sampleData.koss, sampleData.gender));
+    </script>
+</body>
+</html>
